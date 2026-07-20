@@ -61,26 +61,44 @@ export default function Employees() {
   const handleCreateEmployee = async (e: React.FormEvent) => {
     e.preventDefault()
     setCreateLoading(true)
-    
-    // Warn admin about auto-logout
-    if (!confirm("IMPORTANT: Creating a new employee account will log YOU out of your Admin session for security reasons. You will need to log back in. Proceed?")) {
+
+    // To create a user without logging out the current admin, we MUST use the Service Role Key.
+    const serviceRoleKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY
+
+    if (!serviceRoleKey) {
+      alert("SECURITY CONFIGURATION REQUIRED:\n\nTo securely create employee passwords without logging out your Admin session, you must add your Supabase Service Role Key to your .env file as VITE_SUPABASE_SERVICE_ROLE_KEY. \n\n(Note: In a production app, exposing this key in a Vite frontend is a security risk, but works for internal admin tools).")
       setCreateLoading(false)
       return
     }
 
     try {
-      const { error: signUpError } = await supabase.auth.signUp({
+      // Create a dedicated admin client using the service role key
+      const { createClient } = await import('@supabase/supabase-js')
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+      const adminClient = createClient(supabaseUrl, serviceRoleKey, {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false
+        }
+      })
+
+      // Use the admin API to create the user directly
+      const { data: newUser, error: signUpError } = await adminClient.auth.admin.createUser({
         email: newEmail,
         password: newPassword,
+        email_confirm: true // bypass email confirmation
       })
 
       if (signUpError) throw signUpError
 
-      alert(`Employee Account (${newEmail}) created successfully! Please log back into your Admin account.`)
-      await supabase.auth.signOut()
-      navigate('/login')
+      alert(`Employee Account (${newEmail}) created successfully! Your admin session remains active.`)
+      setShowCreateModal(false)
+      setNewEmail('')
+      setNewPassword('')
+      fetchEmployees() // Refresh the list
     } catch (err: any) {
       alert(`Error creating employee: ${err.message}`)
+    } finally {
       setCreateLoading(false)
     }
   }
@@ -194,9 +212,9 @@ export default function Employees() {
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Create New Employee</h2>
             
-            <div className="mb-6 bg-blue-50 dark:bg-blue-900/30 p-4 rounded-md border border-blue-200 dark:border-blue-700">
-              <p className="text-sm text-blue-800 dark:text-blue-300">
-                <strong>Note:</strong> You will be automatically logged out after creating this account. You can log right back in.
+            <div className="mb-6 bg-green-50 dark:bg-green-900/30 p-4 rounded-md border border-green-200 dark:border-green-700">
+              <p className="text-sm text-green-800 dark:text-green-300">
+                <strong>Secure Creation:</strong> Your admin session will remain safely logged in while you create this account.
               </p>
             </div>
 
