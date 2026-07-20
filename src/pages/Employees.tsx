@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
 type Employee = {
@@ -18,6 +19,12 @@ export default function Employees() {
   const [employees, setEmployees] = useState<Employee[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [newEmail, setNewEmail] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [createLoading, setCreateLoading] = useState(false)
+  const navigate = useNavigate()
 
   const fetchEmployees = async () => {
     setLoading(true)
@@ -51,11 +58,46 @@ export default function Employees() {
     }
   }
 
+  const handleCreateEmployee = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setCreateLoading(true)
+    
+    // Warn admin about auto-logout
+    if (!confirm("IMPORTANT: Creating a new employee account will log YOU out of your Admin session for security reasons. You will need to log back in. Proceed?")) {
+      setCreateLoading(false)
+      return
+    }
+
+    try {
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: newEmail,
+        password: newPassword,
+      })
+
+      if (signUpError) throw signUpError
+
+      alert(`Employee Account (${newEmail}) created successfully! Please log back into your Admin account.`)
+      await supabase.auth.signOut()
+      navigate('/login')
+    } catch (err: any) {
+      alert(`Error creating employee: ${err.message}`)
+      setCreateLoading(false)
+    }
+  }
+
   if (loading) return <div className="p-8 text-center text-gray-500">Loading employees...</div>
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Manage Employees</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Manage Employees</h1>
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+        >
+          + Create Employee
+        </button>
+      </div>
       
       {error && <div className="mb-4 text-red-500">{error}</div>}
 
@@ -145,6 +187,66 @@ export default function Employees() {
           </table>
         </div>
       </div>
+
+      {/* Create Employee Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Create New Employee</h2>
+            
+            <div className="mb-6 bg-blue-50 dark:bg-blue-900/30 p-4 rounded-md border border-blue-200 dark:border-blue-700">
+              <p className="text-sm text-blue-800 dark:text-blue-300">
+                <strong>Note:</strong> You will be automatically logged out after creating this account. You can log right back in.
+              </p>
+            </div>
+
+            <form onSubmit={handleCreateEmployee} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+                <input
+                  type="email"
+                  required
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  placeholder="employee@company.com"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Temporary Password</label>
+                <input
+                  type="text"
+                  required
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  placeholder="At least 6 characters"
+                  minLength={6}
+                />
+              </div>
+
+              <div className="flex justify-end space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateModal(false)}
+                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={createLoading}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 shadow-sm disabled:opacity-50"
+                >
+                  {createLoading ? 'Creating...' : 'Create Account'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

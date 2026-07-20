@@ -48,6 +48,7 @@ export default function Leads() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const fetchLeads = async () => {
+    setLoading(true)
     // Admins and employees only see active leads in the main pool (New, Call Later)
     let query = supabase.from('clients').select('*').in('status', ['New', 'Call Later'])
     
@@ -273,11 +274,14 @@ export default function Leads() {
           )}
           <button
             onClick={() => fetchLeads()}
-            className="flex items-center space-x-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm text-sm font-medium"
+            disabled={loading}
+            className={`flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 border border-transparent text-white rounded-md hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md text-sm font-medium ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
             title="Refresh Leads"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-            <span>Refresh</span>
+            <svg className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+            <span>{loading ? 'Refreshing...' : 'Refresh'}</span>
           </button>
         </div>
       </div>

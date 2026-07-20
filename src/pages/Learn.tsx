@@ -31,6 +31,24 @@ const VIDEOS = [
     description: 'A practical breakdown of a cold-call script and structure with real examples.',
     language: 'English',
   },
+  {
+    id: 'aW8jAYnvqyI',
+    title: '35 Minutes of Expert Cold Calling Tips (B2B & Software Sales)',
+    description: 'A deep dive into B2B and software sales cold calling with expert advice.',
+    language: 'English',
+  },
+  {
+    id: 'NdIPxKIPVc0',
+    title: 'The BEST Cold Call Opening Lines 2025',
+    description: '8 sales trainers and practitioners share what they think is the best way to open a cold call.',
+    language: 'English',
+  },
+  {
+    id: 'gtKZ7fP1HZM',
+    title: 'Cold Calling Masterclass: 52 Minutes of Proven Cold Calling Tips',
+    description: 'A masterclass covering proven cold calling tips for B2B sales professionals.',
+    language: 'English',
+  },
 ];
 
 export default function Learn() {

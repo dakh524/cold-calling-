@@ -113,6 +113,24 @@ export default function Onboarding() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
         <div className="text-center mb-8">
+          <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800/80 dark:to-gray-800 rounded-xl border border-blue-100 dark:border-gray-700 shadow-sm relative overflow-hidden">
+            <svg className="absolute top-4 left-4 w-8 h-8 text-blue-200 dark:text-gray-700 transform -scale-x-100" fill="currentColor" viewBox="0 0 32 32" aria-hidden="true">
+              <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
+            </svg>
+            <p className="relative z-10 text-lg md:text-xl font-medium text-gray-800 dark:text-gray-200 italic mb-4 mt-2 px-4">
+              "Success in sales is not about pitching a product; it's about solving a problem and building trust with every single call."
+            </p>
+            <div className="relative z-10 flex items-center justify-end space-x-3 pr-4">
+              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+                DB
+              </div>
+              <div className="text-left">
+                <p className="font-bold text-gray-900 dark:text-white text-sm">Dhivakar Balakrishnan</p>
+                <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">CEO & Founder</p>
+              </div>
+            </div>
+          </div>
+          
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Complete Your Profile</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Please provide your details to continue.
