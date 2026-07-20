@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
 type Employee = {
@@ -24,7 +23,6 @@ export default function Employees() {
   const [newEmail, setNewEmail] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [createLoading, setCreateLoading] = useState(false)
-  const navigate = useNavigate()
 
   const fetchEmployees = async () => {
     setLoading(true)
