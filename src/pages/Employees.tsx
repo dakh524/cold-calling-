@@ -91,7 +91,8 @@ export default function Employees() {
       
       if (newUser.user) {
         // Create the public.employees record so it shows up in the Admin list immediately
-        const { error: dbError } = await supabase.from('employees').insert({
+        // We use adminClient here to ensure it bypasses any RLS issues
+        const { error: dbError } = await adminClient.from('employees').insert({
           id: newUser.user.id,
           email: newUser.user.email,
           name: 'Pending Setup',
@@ -102,8 +103,7 @@ export default function Employees() {
         
         if (dbError) {
           console.error("Failed to insert public.employees record:", dbError)
-          // We don't throw here because the auth user was successfully created, 
-          // but we might want to alert the admin.
+          alert("Error adding to employee list: " + dbError.message)
         }
       }
 
