@@ -6,6 +6,7 @@ import PendingApproval from './pages/PendingApproval'
 import Employees from './pages/Employees'
 import Leads from './pages/Leads'
 import Commissions from './pages/Commissions'
+import Learn from './pages/Learn'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
           <Route path="employees" element={<Employees />} />
           <Route path="leads" element={<Leads />} />
           <Route path="commissions" element={<Commissions />} />
+          <Route path="learn" element={<Learn />} />
         </Route>
         {/* Placeholder for other routes */}
         <Route path="*" element={<Navigate to="/" replace />} />

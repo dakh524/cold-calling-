@@ -12,6 +12,11 @@ type Client = {
   website: string
   type: string
   google_category: string
+  category?: string
+  priority?: string
+  address?: string
+  status?: string
+  owner_name?: string
   google_rating: number
   google_reviews: number
   min_budget_inr: number

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate, Outlet, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
@@ -114,6 +114,9 @@ export default function Dashboard() {
               Manage Employees
             </Link>
           )}
+          <Link to="/learn" className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors ${location.pathname.includes('/learn') ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white'}`}>
+            Learn Cold Calling
+          </Link>
         </nav>
         <div className="p-4 border-t border-gray-200 dark:border-gray-700">
           <div className="flex items-center">
@@ -181,9 +184,9 @@ export default function Dashboard() {
                             outerRadius={80}
                             paddingAngle={5}
                             dataKey="value"
-                            label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
+                            label={({name, percent}) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
                           >
-                            {outcomeData.map((entry, index) => (
+                            {outcomeData.map((_entry, index) => (
                               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                           </Pie>
@@ -207,7 +210,7 @@ export default function Dashboard() {
                           <YAxis />
                           <RechartsTooltip />
                           <Bar dataKey="value" fill="#8884d8">
-                            {outcomeData.map((entry, index) => (
+                            {outcomeData.map((_entry, index) => (
                               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                           </Bar>
