@@ -90,6 +90,24 @@ export default function Employees() {
       })
 
       if (signUpError) throw signUpError
+      
+      if (newUser.user) {
+        // Create the public.employees record so it shows up in the Admin list immediately
+        const { error: dbError } = await supabase.from('employees').insert({
+          id: newUser.user.id,
+          email: newUser.user.email,
+          name: 'Pending Setup',
+          status: 'pending',
+          role: 'employee',
+          onboarding_completed: false
+        })
+        
+        if (dbError) {
+          console.error("Failed to insert public.employees record:", dbError)
+          // We don't throw here because the auth user was successfully created, 
+          // but we might want to alert the admin.
+        }
+      }
 
       alert(`Employee Account (${newEmail}) created successfully! Your admin session remains active.`)
       setShowCreateModal(false)
